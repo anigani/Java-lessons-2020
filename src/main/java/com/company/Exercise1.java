@@ -1,18 +1,98 @@
 package com.company;
 
-public class Exercise1 {
-    public static void main(String[] args) {
-        int m = 5;
-        int n = 3;
-        int d = 4;
+import java.util.Scanner;
 
-        find(m, n, d);
+public class Exercise1 {
+    private int m;
+    private int n;
+    private int d;
+
+    public static void main(String[] args) {
+        Exercise1 exercise1 = new Exercise1();
+
+        exercise1.input();
+
+        if (exercise1.isOK()) {
+            exercise1.find();
+        }
     }
 
-    private static void find(int m, int n, int d) {
+    public void input() {
+        Scanner s = new Scanner(System.in);  // Create a Scanner object
+
+        System.out.print("Enter first cup volume: m = ");
+        m = s.nextInt();  // Read user input
+
+        System.out.print("Enter second cup volume: n = ");
+        n = s.nextInt();  // Read user input
+
+        System.out.print("Required liters: d = ");
+        d = s.nextInt();  // Read user input
+    }
+
+    public boolean isOK() {
+        if (n <= 0) {
+            System.out.println("Input must be > 0.");
+            return false;
+        }
+
+        if (m <= 0) {
+            System.out.println("Input must be > 0.");
+            return false;
+        }
+
+        if (d <= 0) {
+            System.out.println("Input must be > 0.");
+            return false;
+        }
+
+        if (n == m) {
+            System.out.println("The cups volumes must be different.");
+            return false;
+        }
+
+        if (m > n) {
+            if (m % n == 0) {
+                System.out.println("No solution.");
+                return false;
+            }
+        } else {
+            if (n % m == 0) {
+                System.out.println("No solution.");
+                return false;
+            }
+        }
+
+        if (d > Math.max(m, n)) {
+            System.out.println("Required liters must be <= max(m, n)");
+            return false;
+        }
+
+        if ((d % gcd(m, n)) != 0) {
+            System.out.println("GCD of n and m does not divide d");
+            System.out.println("No solution!");
+            return false;
+        }
+
+        return true;
+    }
+
+    public void find() {
         // step 0: initialize
         int mCap = m;
         int nCap = 0;
+
+        if (d == m) {
+            print(m, 0);
+            System.out.println("Find solution.");
+            return;
+        }
+
+        if (d == n) {
+            print(0, n);
+            System.out.println("Find solution.");
+            return;
+        }
 
         while (true) {
             print(mCap, nCap);
@@ -36,6 +116,7 @@ public class Exercise1 {
             print(mCap, nCap);
             // check
             if (mCap == d || nCap == d) {
+                System.out.println("Find solution!");
                 return;
             }
             // step 2: Whenever the m litre cap becomes empty fill it.
@@ -50,7 +131,18 @@ public class Exercise1 {
 
     }
 
-    private static void print(int mCap, int nCap) {
+    private int gcd(int num1, int num2) {
+        while (num1 != num2) {
+            if (num1 > num2)
+                num1 = num1 - num2;
+            else
+                num2 = num2 - num1;
+        }
+
+        return num2;
+    }
+
+    private void print(int mCap, int nCap) {
         System.out.printf("mCap=%d, nCap=%d\n", mCap, nCap);
     }
 }
