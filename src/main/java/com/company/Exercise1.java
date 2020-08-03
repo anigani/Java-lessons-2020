@@ -12,7 +12,7 @@ public class Exercise1 {
 
         exercise1.input();
 
-        if (exercise1.isOK()) {
+        if (exercise1.isInputOK()) {
             exercise1.find();
         }
     }
@@ -30,7 +30,7 @@ public class Exercise1 {
         d = s.nextInt();  // Read user input
     }
 
-    public boolean isOK() {
+    public boolean isInputOK() {
         if (n <= 0) {
             System.out.println("Input must be > 0.");
             return false;
@@ -78,54 +78,56 @@ public class Exercise1 {
     }
 
     public void find() {
-        // step 0: initialize
-        int mCap = m;
-        int nCap = 0;
-
         if (d == m) {
-            print(m, 0);
+            System.out.printf("mCup=%d, nCup=%d\n", m, 0);
             System.out.println("Find solution.");
             return;
         }
 
         if (d == n) {
-            print(0, n);
+            System.out.printf("mCup=%d, nCup=%d\n", 0, n);
             System.out.println("Find solution.");
             return;
         }
 
+        // step 0: initialize
+        Cup mCup = new Cup(m);
+        mCup.fill();
+        Cup nCup = new Cup(n);
+        nCup.empty();
+
         while (true) {
-            print(mCap, nCap);
-            // step 1: Fill the m litre cap and empty it into n litre cap.
-            if (mCap >= n) {
-                if (nCap == 0) {
-                    mCap = mCap - n;
+            print(mCup, nCup);
+            // step 1: Fill the m litre cup and empty it into n litre cup.
+            if (mCup.getSize() >= nCup.getVolume()) {
+                if (nCup.isEmpty()) {
+                    mCup.fillOut(nCup.getVolume());
                 } else {
-                    mCap = mCap - (n - nCap);
+                    mCup.fillOut(nCup.getRemain());
                 }
-                nCap = n;
+                nCup.fill();
             } else {
-                if (n - nCap > mCap) {
-                    nCap = nCap + mCap;
-                    mCap = 0;
+                if (nCup.getRemain() > mCup.getSize()) {
+                    nCup.fillIn(mCup.getSize());
+                    mCup.empty();
                 } else {
-                    mCap = mCap - (n - nCap);
-                    nCap = n;
+                    mCup.fillOut(nCup.getRemain());
+                    nCup.fill();
                 }
             }
-            print(mCap, nCap);
+            print(mCup, nCup);
             // check
-            if (mCap == d || nCap == d) {
+            if (mCup.getSize() == d || nCup.getSize() == d) {
                 System.out.println("Find solution!");
                 return;
             }
-            // step 2: Whenever the m litre cap becomes empty fill it.
-            if (mCap == 0) {
-                mCap = m;
+            // step 2: Whenever the m litre cup becomes empty fill it.
+            if (mCup.isEmpty()) {
+                mCup.fill();
             }
-            // step 3: Whenever the n litre cap becomes full empty it.
-            if (nCap == n) {
-                nCap = 0;
+            // step 3: Whenever the n litre cup becomes full empty it.
+            if (nCup.isFull()) {
+                nCup.empty();
             }
         }
 
@@ -142,7 +144,7 @@ public class Exercise1 {
         return num2;
     }
 
-    private void print(int mCap, int nCap) {
-        System.out.printf("mCap=%d, nCap=%d\n", mCap, nCap);
+    private void print(Cup mCup, Cup nCup) {
+        System.out.printf("mCup=%d, nCup=%d\n", mCup.getSize(), nCup.getSize());
     }
 }
