@@ -3,45 +3,45 @@ package com.company;
 import java.util.Scanner;
 
 public class Exercise1 {
+    private Scanner s = new Scanner(System.in);  // Create a Scanner object
+
     private int m;
     private int n;
     private int d;
 
+    public Exercise1() {
+    }
+
+    public Exercise1(int m, int n, int d) {
+        this.m = m;
+        this.n = n;
+        this.d = d;
+        swap();
+    }
+
     public static void main(String[] args) {
         Exercise1 exercise1 = new Exercise1();
 
-        exercise1.input();
-
-        if (exercise1.isInputOK()) {
+        try {
+            exercise1.input();
+        } catch (Exception e) {
+            System.out.println("Input exception.");
+            return;
+        }
+       exercise1.swap();
+       if (exercise1.isInputOK()) {
             exercise1.find();
         }
     }
 
     public void input() {
-        Scanner s = new Scanner(System.in);  // Create a Scanner object
-
-        System.out.print("Enter first cup volume: m = ");
-        m = s.nextInt();  // Read user input
-
-        System.out.print("Enter second cup volume: n = ");
-        n = s.nextInt();  // Read user input
-
-        System.out.print("Required liters: d = ");
-        d = s.nextInt();  // Read user input
+        m = input("Enter first cup volume: m = ");
+        n = input("Enter second cup volume: n = ");
+        d = input("Required liters: d = ");
     }
 
     public boolean isInputOK() {
-        if (n <= 0) {
-            System.out.println("Input must be > 0.");
-            return false;
-        }
-
-        if (m <= 0) {
-            System.out.println("Input must be > 0.");
-            return false;
-        }
-
-        if (d <= 0) {
+        if (m <= 0 || n <= 0 || d <= 0) {
             System.out.println("Input must be > 0.");
             return false;
         }
@@ -51,25 +51,13 @@ public class Exercise1 {
             return false;
         }
 
-        if (m > n) {
-            if (m % n == 0) {
-                System.out.println("No solution.");
-                return false;
-            }
-        } else {
-            if (n % m == 0) {
-                System.out.println("No solution.");
-                return false;
-            }
-        }
-
         if (d > Math.max(m, n)) {
             System.out.println("Required liters must be <= max(m, n)");
             return false;
         }
 
         if ((d % gcd(m, n)) != 0) {
-            System.out.println("GCD of n and m does not divide d");
+            System.out.println("GCD of m and n does not divide d");
             System.out.println("No solution!");
             return false;
         }
@@ -144,7 +132,20 @@ public class Exercise1 {
         return num2;
     }
 
+    private int input(String msg) {
+        System.out.print(msg);
+        return s.nextInt();
+    }
+
     private void print(Cup mCup, Cup nCup) {
         System.out.printf("mCup=%d, nCup=%d\n", mCup.getSize(), nCup.getSize());
+    }
+
+    private void swap() {
+        if (n > m) {
+            int t = m;
+            m = n;
+            n = t;
+        }
     }
 }
